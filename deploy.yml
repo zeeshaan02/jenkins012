@@ -3,14 +3,28 @@
   hosts: web
   become: yes
   tasks:
-    - name: Install required packages
+    - name: Install required dependencies
       yum:
         name:
-          - docker
+          - yum-utils
           - git
-          - docker-compose-plugin
         state: present
         update_cache: yes
+
+    - name: Add Docker repository
+      command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+      args:
+        warn: false
+      ignore_errors: yes
+
+    - name: Install Docker and Compose plugin
+      yum:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: present
 
     - name: Start and enable Docker service
       service:
@@ -35,8 +49,8 @@
         mode: '0644'
 
     - name: Run docker compose up
-      shell: |
-        docker compose -f /home/ec2-user/docker-compose.yml up -d
+      shell: docker compose -f /home/ec2-user/docker-compose.yml up -d
       args:
         chdir: /home/ec2-user
+
 

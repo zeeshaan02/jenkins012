@@ -16,7 +16,7 @@ pipeline {
 
         stage('Verify') {
             steps {
-                sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.13.173 "docker ps"'
+                sh 'ansible-playbook deploy.yml -i /etc/ansible/hosts'
             }
         }
     }

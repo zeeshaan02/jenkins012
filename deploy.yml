@@ -1,30 +1,22 @@
 ---
-- name: Deploy Docker App on Amazon Linux EC2
+- name: Install Docker and Ansible on Amazon Linux EC2
   hosts: web
   become: yes
   tasks:
-    - name: Install required dependencies
+    - name: Update yum packages
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Install required packages (Docker and Ansible)
       yum:
         name:
-          - yum-utils
+          - docker
+          - python3
           - git
+          - ansible
         state: present
         update_cache: yes
-
-    - name: Add Docker repository
-      command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-      args:
-        warn: false
-      ignore_errors: yes
-
-    - name: Install Docker and Compose plugin
-      yum:
-        name:
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
-          - docker-compose-plugin
-        state: present
 
     - name: Start and enable Docker service
       service:
@@ -32,25 +24,10 @@
         state: started
         enabled: yes
 
-    - name: Verify Docker Compose installation
-      command: docker compose version
-      register: compose_version
-      ignore_errors: yes
+    - name: Verify Docker installation
+      command: docker --version
+      register: docker_version
 
     - debug:
-        msg: "Installed Docker Compose Version: {{ compose_version.stdout }}"
-
-    - name: Copy docker-compose file to EC2
-      copy:
-        src: ./docker-compose.yml
-        dest: /home/ec2-user/docker-compose.yml
-        owner: ec2-user
-        group: ec2-user
-        mode: '0644'
-
-    - name: Run docker compose up
-      shell: docker compose -f /home/ec2-user/docker-compose.yml up -d
-      args:
-        chdir: /home/ec2-user
-
+        msg: "Installed Docker Version: {{ docker_version.stdout }}"
 

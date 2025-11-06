@@ -8,6 +8,7 @@
         name:
           - docker
           - git
+          - docker-compose-plugin
         state: present
         update_cache: yes
 
@@ -17,14 +18,8 @@
         state: started
         enabled: yes
 
-    - name: Install docker-compose
-      get_url:
-        url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
-        dest: /usr/local/bin/docker-compose
-        mode: '0755'
-
-    - name: Verify docker-compose installation
-      command: docker-compose --version
+    - name: Verify Docker Compose installation
+      command: docker compose version
       register: compose_version
       ignore_errors: yes
 
@@ -39,9 +34,9 @@
         group: ec2-user
         mode: '0644'
 
-    - name: Run docker-compose up
+    - name: Run docker compose up
       shell: |
-        docker-compose -f /home/ec2-user/docker-compose.yml up -d
+        docker compose -f /home/ec2-user/docker-compose.yml up -d
       args:
         chdir: /home/ec2-user
 

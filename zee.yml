@@ -1,0 +1,7 @@
+- name: Copy file from Jenkins to remote server
+  hosts: webserver
+  tasks:
+    - name: Copy file
+      copy:
+        src: /var/lib/jenkins/workspace/jenkinsjob01@2
+        dest: /home/ec2-user/project23

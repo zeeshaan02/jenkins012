@@ -1,6 +1,6 @@
 ---
 - name: Copy file from Jenkins to remote server
-  hosts: webserver
+  hosts: web
   become: yes
   tasks:
     - name: Copy build files from Jenkins workspace

@@ -1,7 +1,11 @@
+---
 - name: Copy file from Jenkins to remote server
   hosts: webserver
+  become: yes
   tasks:
-    - name: Copy file
+    - name: Copy build files from Jenkins workspace
       copy:
-        src: /var/lib/jenkins/workspace/jenkinsjob01@2
-        dest: /home/ec2-user/project23
+        src: /var/lib/jenkins/workspace/jenkinsjob01@2/
+        dest: /home/ec2-user/project23/
+        owner: ec2-user
+        group: ec2-user
